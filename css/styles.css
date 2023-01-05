@@ -1,0 +1,35 @@
+/* General colors and sizes */
+
+/* Reset properties from html elements */
+*{
+    border: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* General styles */
+html{
+    font-size: 62.5%;
+}
+
+/* graph  styles */
+.graph__container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.graph__canvas{
+    margin: 24px auto;
+    background-color: #eee;
+}
+.canvas-graph--cursor-crosshair{
+    cursor: crosshair;
+}
+
+#coordinates{
+    position: fixed;
+    right: 50px;
+    top: 0;
+}
