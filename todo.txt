@@ -1,0 +1,4 @@
+// 05/01/2023
+1.- Dibujar la grilla con padding
+2.- Dibujar los rangos en "y"
+3.- el canvas responsivo.  -->Pendiente

@@ -22,7 +22,7 @@ html{
 
 .graph__canvas{
     margin: 24px auto;
-    background-color: #eee;
+    background-color: red;
 }
 .canvas-graph--cursor-crosshair{
     cursor: crosshair;
