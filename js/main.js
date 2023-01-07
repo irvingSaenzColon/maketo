@@ -1,11 +1,19 @@
-const arr = [100, 650, 840, 255, 360, 460, 760, 535, 10, 66];
+const arr = [100, 650, 840, 255, 360, 460, 760, 535, 10, 66, 466, 350];
 
 // Element from document
+    // canvas elements
 const canvas = document.getElementById('graph');
 const context = canvas.getContext('2d');
 
 const coordinates = document.getElementById('coordinates');
+const graph_container = document.querySelector('section.graph__container');
 
+    // Form elements
+const calculate_form = document.querySelector('form.form');
+const investment_input = document.querySelector('input[name = "investment"]');
+const annual_rate_input = document.querySelector('input[name = "yield"]');
+const inv_time_select = document.querySelector('select[name = "investment_time"]');
+const time_limit_select = document.querySelector('select[name = "time_limit"]');
 
 const graph_properties = {
     x_start : 0,
@@ -21,19 +29,37 @@ const color = {
     baby_blue_eyes: '#A7CCED',
     y_in_min_blue: '#304D6D',
     air_superiority_blue: '#82A0BC'   
-   };
+};
+
 console.log(context);
 
 // Eventlisteners
+window.addEventListener('load', onWindowLoad);
 window.addEventListener('resize', onWindowResize);
 
 canvas.addEventListener('mousemove', getCanvasCoordinates);
 canvas.addEventListener('mouseenter', onCanvasEnter);
 canvas.addEventListener('mouseleave', onCanvasLeave);
 
+calculate_form.addEventListener('submit', onCalculate)
+
 // Resize functions
 function onWindowResize(event){
     console.log(`Ancho: ${event.target.innerWidth} Alto: ${event.target.innerHeight}`);
+}
+
+// Load window
+function onWindowLoad(event){
+
+    if(graph_container.classList.contains('inactive'))
+        return;
+    setCanvasResponsiveSize();
+
+    drawBackground(20, '#eeeeee');
+    drawGrid(graph_properties ,10, 5);
+
+    drawArray(arr, graph_properties.width, graph_properties.height, graph_properties.x_start, graph_properties.y_start, 4, 0);
+
 }
 
 // Mousemove functions
@@ -45,7 +71,7 @@ function getCanvasCoordinates(event){
     coordinates.innerText = `X: ${x}, Y:  ${y}`;
 }
 
-// Mouseenter function
+// Mouseenter functions
 function onCanvasEnter(event){
     canvas.classList.add('canvas-graph--cursor-crosshair');
 }
@@ -54,6 +80,25 @@ function onCanvasEnter(event){
  function onCanvasLeave(event){
     canvas.classList.remove('canvas-graph--cursor-crosshair');
  }
+
+//  Click functions
+function onCalculate(event){
+    event.preventDefault();
+    
+    const investment = Number(investment_input.value);
+    const annual_rate = Number(annual_rate_input.value) / 100;
+    
+    const years = Number(inv_time_select.value);
+    const time_limit = time_limit_select.value;
+    
+    const final_return = returnOfInvestment(years, investment, annual_rate);
+    const time_return = investmentReturn(investment, annual_rate, time_limit);
+
+    console.log(final_return.toFixed(2));
+    console.log(time_return.toFixed(2));
+    investmentPorjection(investment, 10, annual_rate);
+
+}
 
 // Drawing Functions
 function drawGrid(graph, linesX, linesY){
@@ -128,12 +173,54 @@ function getMinMaxRange(array){
     return {max: max, min:  min};
 }
 
+function setCanvasResponsiveSize(){
+    
+    const width = window.innerWidth > 900 ? 800 : window.innerWidth;
+    const height = window.innerHeight * 0.75;
 
-// Calculate functions
+    console.log('Ancho del viewport ' + window.innerWidth);
 
-drawBackground(20, '#eeeeee');
-drawGrid(graph_properties ,10, 5);
+    canvas.width = width;
+    canvas.height = height;
+    
+}
 
-drawArray(arr, graph_properties.width, graph_properties.height, graph_properties.x_start, graph_properties.y_start, 4, 0);
-// drawLine(0, 500, 75, -100, '#65A3B8');
-// drawLine(80, 500, 75, -50, '#65A3B8');
+function investmentReturn(invest, annual_rate, time_limit){
+    // Calculating Return of Investment for a month
+    const roi = invest * (annual_rate / 12);
+
+    if(time_limit === 'weekly')
+        return roi / 4;
+    else if(time_limit === 'biweekly')
+        return roi / 2;
+    else if(time_limit === 'monthly')
+        return roi;
+    else if(time_limit === 'quarterly')
+        return roi * 3;
+    else if(time_limit === 'biannual')
+        return roi * 6;
+    else if(time_limit === 'annual')
+        return roi * 12;
+}
+
+function returnOfInvestment(years, invest, annual_rate){
+    years*=12;
+    return (invest * annual_rate * ( years / 12 ));
+}
+
+function investmentPorjection(invest, years, annual_rate){
+    const projection = [];
+    let current_invest = invest;
+    for(let i = 0; i < years; i++) {
+        let current_worth = returnOfInvestment(1, current_invest, annual_rate);
+        current_invest = current_worth + current_invest;
+        let invest_no_profit = current_invest - current_worth; 
+        projection.push( {
+            invest: invest_no_profit,
+            profit: current_worth,
+            total: current_invest,    
+        } );
+    }
+
+    console.table( projection );
+}

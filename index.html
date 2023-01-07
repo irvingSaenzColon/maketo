@@ -4,13 +4,45 @@
         <title>Maketo</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./css/styles.css"/>
     </head>
     <body>
         <header></header>
         <main>
-            <section class="graph__container">
-                <canvas width="500" height="500" id="graph" class="graph__canvas">
+            <form class="form">
+                <label for="investment">Inversión</label>
+                <input type="number" name="investment" placeholder="Ingrese el monto que desea invertir">
+                <label for="yield">Rendimiento</label>
+                <input type="text" name="yield" placeholder="Ingrese el rendimiento anual">
+                <label for="investment_time">Tiempo de inversión</label>
+                <select name="investment_time" id="">
+                    <option value="1">  1  año</option>
+                    <option value="2">  2  años</option>
+                    <option value="3">  3  años</option>
+                    <option value="4">  4  años</option>
+                    <option value="5">  5  años</option>
+                    <option value="6">  6  años</option>
+                    <option value="7">  7  años</option>
+                    <option value="8">  8  años</option>
+                    <option value="9">  9  años</option>
+                    <option value="10">10 años</option>
+                </select>
+                <label for="time_limit">Pago de intereses</label>
+                <select name="time_limit" id="">
+                    <option value="weekly">Semanal</option>
+                    <option value="biweekly">Quincenal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="quarterly">Trimestral</option>
+                    <option value="biannual">Semestral</option>
+                    <option value="annual">Anual</option>
+                </select>
+                <button>Calcular</button>
+            </form>
+            <section class="graph__container inactive">
+                <canvas id="graph" class="graph__canvas">
                 </canvas>
             </section>
             <p id="coordinates">Coordinates</p>
