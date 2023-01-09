@@ -3,7 +3,7 @@
 2.- hacer validaciones
 
 // 08/01/2023
-0.- colocar la página activa.
+0.- colocar la página activa. --En progreso
 1.- paginación
 2.- actualizar los botones de las páginas cuando avanza o retrocede
 3.- poder volver consultar otra inversión

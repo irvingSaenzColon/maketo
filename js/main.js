@@ -141,10 +141,7 @@ function onCalculate(event){
     });
 
     for(let i = 0; i < limit_page_count; i++){
-        if(i < limit_page_count - 1)
-            page_number_buttons.appendChild( createButtonHTML(i + 1, 'pageable-table__button') );
-        else
-            page_number_buttons.appendChild( createButtonHTML( page_count, 'pageable-table__button') );
+        page_number_buttons.appendChild( createButtonHTML(i + 1, 'pageable-table__button') );
     }
 
     page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button--active');
@@ -157,14 +154,32 @@ function onCalculate(event){
 
 function onChangePage(event){
     
-    const button = event.target.closest('button') ;
+    const button = event.target.closest('button');
+    const buttons = page_number_buttons.querySelectorAll('button');
 
+    //if next button is not 1 then 
     if(button.getAttribute('data-direction') === 'right'){
 
-        clearTable(return_table); //Hacer animación de eliminar
+        let position = Number( return_table.getAttribute('data-page') ) ;
+        
+        //Preventing from user to get outside boundries of page e.g if my pages limit is 8 and users press m 
+        if( buttons.length  === position)
+            return;
+        
+        position++;
 
-        let position = Number( return_table.getAttribute('data-page') ) + 1;
+        // Clearing all objects that i don't need
+        clearTable(return_table); //Make an animation before elements are deleted
+
+        // Setting next page
         return_table.setAttribute('data-page', position);
+
+        if(buttons.length === position+1)
+            document.querySelector('button[data-direction="left"]').classList.add('inactive');
+
+        if(position != 1)
+            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
+        
 
         const page = pageableTable( dates_result, position - 1 , 6 );
 
@@ -172,7 +187,7 @@ function onChangePage(event){
             return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
         });
 
-        //Colocar la página activa
+        setActivePage(position, buttons);
     }
     else{
         //Haz algo
@@ -295,11 +310,25 @@ function getPages(array, limit){
     return Math.floor( array.length / limit );
 }
 
-
 function setActivePage(current_page, buttons){
-    buttons.forEach(function(button){
-        if(button.innerText == current_page)
-            button
+    console.log(buttons);
+    console.log(current_page);
+    buttons.forEach(function(button, index){
+        if(button.innerText == current_page ){
+            if(button.nextSibling === null){
+                for(let i = index - 1; i >= 0; i --)
+                    buttons[i].innerText = Number(buttons[i].innerText) + 1;
+                button.innerText = Number(button.innerText) + 1;
+            }
+            else if(!button.classList.contains('pageable-table__button--active'))
+                button.classList.add('pageable-table__button--active');
+        }
+        else{
+            button.classList.remove('pageable-table__button--active');
+        }
+
+        
+
     });
 }
 
