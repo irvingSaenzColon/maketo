@@ -156,33 +156,33 @@ function onChangePage(event){
     
     const button = event.target.closest('button');
     const buttons = page_number_buttons.querySelectorAll('button');
+    const total_pages = dates_result.length / 6;
 
     //if next button is not 1 then 
     if(button.getAttribute('data-direction') === 'right'){
 
         let position = Number( return_table.getAttribute('data-page') ) ;
-        
+        console.log('Avanzando de página')
         //Preventing from user to get outside boundries of page e.g if my pages limit is 8 and users press m 
-        if( buttons.length  === position)
+        if( total_pages === position)
             return;
-        
+        console.log('Sí se cambió de página')
         position++;
 
+        if(total_pages === position)
+            document.querySelector('button[data-direction="right"]').classList.add('inactive');
+
+        if(position != 1)
+            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
+        
         // Clearing all objects that i don't need
         clearTable(return_table); //Make an animation before elements are deleted
 
         // Setting next page
         return_table.setAttribute('data-page', position);
 
-        if(buttons.length === position+1)
-            document.querySelector('button[data-direction="left"]').classList.add('inactive');
-
-        if(position != 1)
-            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
-        
-
         const page = pageableTable( dates_result, position - 1 , 6 );
-
+        console.table(page);
         page.forEach(function(element){
             return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
         });
@@ -242,7 +242,7 @@ function drawGrid(graph, linesX, linesY){
 function drawLine(x_position, y_position, width, height, color){
     context.fillStyle  = color;
     context.fillRect(x_position, y_position, width, height);
-    context.fillRect.bind(context, )
+    context.fillRect.bind(context, );
 }
 
 function drawLineBind(context, x_position, y_position, width, height, color){
@@ -297,9 +297,10 @@ function pageableTable( array, page, limit){
     if(array.length <= limit)
         return array;
 
-    let current_position =  page ? (pages * page) - 1 : 0;
+    let current_position =  page ? (limit * page) : 0;
     let new_array = [];
-
+    console.log(current_position);
+    console.log(pages, page);
     for(let i = current_position; i < (current_position + limit); i++ )
         new_array.push({date: array[i].date, pay: array[i].pay });
 
@@ -318,7 +319,7 @@ function setActivePage(current_page, buttons){
             if(button.nextSibling === null){
                 for(let i = index - 1; i >= 0; i --)
                     buttons[i].innerText = Number(buttons[i].innerText) + 1;
-                button.innerText = Number(button.innerText) + 1;
+                // button.innerText = Number(button.innerText) + 1;
             }
             else if(!button.classList.contains('pageable-table__button--active'))
                 button.classList.add('pageable-table__button--active');
