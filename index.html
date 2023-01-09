@@ -12,7 +12,7 @@
     <body>
         <header></header>
         <main>
-            <form class="form">
+            <form class="form" autocomplete="off">
                 <label for="investment">Inversión</label>
                 <input type="number" name="investment" placeholder="Ingrese el monto que desea invertir">
                 <label for="yield">Rendimiento</label>
@@ -41,9 +41,54 @@
                 </select>
                 <button>Calcular</button>
             </form>
-            <section class="graph__container inactive">
-                <canvas id="graph" class="graph__canvas">
-                </canvas>
+            <section class="container container--column inactive">
+                <div class="container__tabs">
+                    <button class="container__tab container__tab--active">Calculos</button>
+                    <button class="container__tab">Proyección</button>
+                </div>
+                <div>
+                    <div class="tables-container">
+                        <h2 class="section__title">Resultados de la Inversión</h2>
+                        <p>A continuación se muestran los datos que se han ingresado para el calculo de su inversión</p>
+                        <table id="initial-table" class="investment__table">
+                            <tr>
+                                <th>Inversión Inicial</th>
+                                <th>Tasa anual de interés</th>
+                            </tr>
+                        </table>
+                        <p>Lo que usted ganaría al final de su periodo de inversión sería lo siguiente:</p>
+                        <table id="worth-table" class="investment__table">
+                            <tr>
+                                <th>Ganancia</th>
+                                <th>Retorno de inversión</th>
+                            </tr>
+                        </table>
+                        <h2 class="section__title">Pagos</h2>
+                        <p>Usted ha elegido el pago de intereses semanal por lo que se dividirán en diferentes exhibiciones: </p>
+                        <table id="return-table" data-page="" class="investment__table investment__table--small">
+                            <tr>
+                                <th>Fecha de pago</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </table>
+                        <div class="pageable-table">
+                            <button class="pageable-table__button" data-direction="left">
+                                <svg width="60" height="109" viewBox="0 0 60 109" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M49.5 99L10 51.5L49.5 10" stroke="black" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div></div>
+                            <button class="pageable-table__button" data-direction="right">
+                                <svg width="60" height="109" viewBox="0 0 60 109" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 10L49.5 57.5L10 99" stroke="black" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                    </div>
+                    <canvas id="graph" class="graph__canvas inactive">
+                    </canvas>
+                </div>
             </section>
             <p id="coordinates">Coordinates</p>
         </main>

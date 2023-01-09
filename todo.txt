@@ -1,4 +1,10 @@
-// 05/01/2023
-1.- Dibujar la grilla con padding
-2.- Dibujar los rangos en "y"
-3.- el canvas responsivo.  -->Pendiente
+// 07/01/2023
+1.- calcular y mostrar resultados
+2.- hacer validaciones
+
+// 08/01/2023
+0.- colocar la página activa.
+1.- paginación
+2.- actualizar los botones de las páginas cuando avanza o retrocede
+3.- poder volver consultar otra inversión
+4.- agregar animaciones

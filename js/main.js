@@ -6,7 +6,7 @@ const canvas = document.getElementById('graph');
 const context = canvas.getContext('2d');
 
 const coordinates = document.getElementById('coordinates');
-const graph_container = document.querySelector('section.graph__container');
+const graph_container = document.querySelector('section.container');
 
     // Form elements
 const calculate_form = document.querySelector('form.form');
@@ -15,12 +15,22 @@ const annual_rate_input = document.querySelector('input[name = "yield"]');
 const inv_time_select = document.querySelector('select[name = "investment_time"]');
 const time_limit_select = document.querySelector('select[name = "time_limit"]');
 
+
+const initial_table = document.getElementById('initial-table');
+const worth_table = document.getElementById('worth-table');
+const return_table = document.getElementById('return-table');
+
+const page_number_buttons = document.querySelector('div.pageable-table>div');
+const change_page_buttons = document.querySelectorAll('div.pageable-table>button');
+
 const graph_properties = {
     x_start : 0,
     y_start: 0,
     width: canvas.width,
     height: canvas.height
 };
+
+let dates_result = [];
 
 // Colors
 const color = {
@@ -51,14 +61,18 @@ function onWindowResize(event){
 // Load window
 function onWindowLoad(event){
 
-    if(graph_container.classList.contains('inactive'))
-        return;
-    setCanvasResponsiveSize();
+    change_page_buttons.forEach(function(button){
+        button.addEventListener('click', onChangePage);
+    })
 
-    drawBackground(20, '#eeeeee');
-    drawGrid(graph_properties ,10, 5);
+    // if(graph_container.classList.contains('inactive'))
+    //     return;
+    // setCanvasResponsiveSize();
 
-    drawArray(arr, graph_properties.width, graph_properties.height, graph_properties.x_start, graph_properties.y_start, 4, 0);
+    // drawBackground(20, '#eeeeee');
+    // drawGrid(graph_properties ,10, 5);
+
+    // drawArray(arr, graph_properties.width, graph_properties.height, graph_properties.x_start, graph_properties.y_start, 4, 0);
 
 }
 
@@ -94,10 +108,104 @@ function onCalculate(event){
     const final_return = returnOfInvestment(years, investment, annual_rate);
     const time_return = investmentReturn(investment, annual_rate, time_limit);
 
+    dates_result = calculatePayDay(years, time_limit);
+
+    dates_result = dates_result.map(function(element, index){
+        return {date: element.date, pay: time_return};
+    });
+
     console.log(final_return.toFixed(2));
     console.log(time_return.toFixed(2));
+    console.table(dates_result);
+
     investmentPorjection(investment, 10, annual_rate);
 
+    event.target.classList.add('inactive');
+
+    graph_container.classList.remove('inactive');
+
+    initial_table.appendChild(createTableRowHTML(investment, `${(annual_rate * 100)} %`));
+    worth_table.appendChild(createTableRowHTML(final_return, investment + final_return));
+    
+    const page = pageableTable( dates_result, 0, 6);
+
+    let page_count = getPages(dates_result, 6) ;
+
+    let limit_page_count = page_count > 4 ? 4 : page_count;
+
+    return_table.setAttribute('data-page', 1);
+
+    change_page_buttons.forEach(function(button){
+        if(button.getAttribute('data-direction') === 'left')
+            button.classList.add('inactive');
+    });
+
+    for(let i = 0; i < limit_page_count; i++){
+        if(i < limit_page_count - 1)
+            page_number_buttons.appendChild( createButtonHTML(i + 1, 'pageable-table__button') );
+        else
+            page_number_buttons.appendChild( createButtonHTML( page_count, 'pageable-table__button') );
+    }
+
+    page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button');
+
+    page.forEach(function(element){
+        return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
+    });
+
+}
+
+function onChangePage(event){
+    
+    const button = event.target.closest('button') ;
+
+    if(button.getAttribute('data-direction') === 'right'){
+        //Haz algo
+        clearTable(return_table);
+        let position = Number( return_table.getAttribute('data-page') ) + 1;
+        return_table.setAttribute('data-page', position);
+
+        const page = pageableTable( dates_result, position - 1 , 6 );
+
+        page.forEach(function(element){
+            return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
+        });
+    }
+    else{
+        //Haz algo
+    }
+}
+
+// HTML create functions
+function createTableRowHTML(value_left, value_right){
+    const tr = document.createElement('tr');
+    const td_left = document.createElement('td');
+    const td_right = document.createElement('td');
+
+    td_left.innerText = value_left;
+    td_right.innerText = value_right;
+
+    tr.append(td_left, td_right);
+
+    return tr;
+
+}
+
+function createButtonHTML(value, class_name){
+    const button = document.createElement('button');
+    button.classList.add(class_name);
+    button.innerText = value;
+
+    return button;
+}
+
+// HTML clear table
+function clearTable(table_element){
+    const tr = table_element.querySelectorAll('table>tr');
+    
+    tr.forEach(function(element){
+        table_element.removeChild(element);
+    });
 }
 
 // Drawing Functions
@@ -164,6 +272,27 @@ function drawArray(array, width, height, x_start, y_start, speed, delay){
     }
 }
 
+// Pageable
+function pageableTable( array, page, limit){
+    let pages = getPages(array, limit);
+
+    if(array.length <= limit)
+        return array;
+
+    let current_position =  page ? (pages * page) - 1 : 0;
+    let new_array = [];
+
+    for(let i = current_position; i < (current_position + limit); i++ )
+        new_array.push({date: array[i].date, pay: array[i].pay });
+
+    return new_array;
+}
+
+function getPages(array, limit){
+    return Math.floor( array.length / limit );
+}
+
+
 //Regular functions
 
 function getMinMaxRange(array){
@@ -206,6 +335,75 @@ function investmentReturn(invest, annual_rate, time_limit){
 function returnOfInvestment(years, invest, annual_rate){
     years*=12;
     return (invest * annual_rate * ( years / 12 ));
+}
+
+function calculatePayDay(years, type){
+    let now = new Date();
+    let count = 0;
+    const dates = [];
+
+    if(type === 'weekly'){
+        count = (years * 12) * 4 ;
+        for(let i = 0; i < count; i ++){
+            now.setDate( now.getDate() +  7 );
+            dates.push({
+                date: `${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear()}`,
+            });
+        }
+    }
+    else if(type === 'biweekly'){
+        count = (years * 12) * 2 ;
+        for(let i = 0; i < count; i ++){
+            now.setDate( now.getDate() +  (7 * 2) );
+             dates.push({
+                date: `${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear()}`,
+            });
+        }
+    }
+    else if(type === 'monthly'){
+        count = (years * 12) ;
+        for(let i = 0; i < count; i ++){
+            now.setMonth( now.getMonth() +  1 );
+             dates.push({
+                date: `${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear()}`,
+            });
+        }
+    }
+    else if(type === 'quarterly'){
+        count = (years * 12) / 3 ;
+        for(let i = 0; i < count; i ++){
+            now.setMonth( now.getMonth() +  3 );
+             dates.push({
+                date: `${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear()}`,
+            });
+        }
+    }
+    else if(type === 'biannual'){
+        count = (years * 12) / 6 ;
+        for(let i = 0; i < count; i ++){
+            now.setMonth( now.getMonth() +  6 );
+             dates.push({
+                date: `${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear()}`,
+            });
+        }
+    }
+    else if(type === 'annual'){
+        count = years;
+        for(let i = 0; i < count; i ++){
+            now.setFullYear( now.getFullYear() +  1 );
+             dates.push({
+                date: `${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear()}`,
+            });
+        }
+    }
+
+    return dates;
+}
+
+function addWeeks(date, weeks){
+    date.setDate( date.getDate() + 7 * weeks );
+
+    return date;
 }
 
 function investmentPorjection(invest, years, annual_rate){
