@@ -147,7 +147,7 @@ function onCalculate(event){
             page_number_buttons.appendChild( createButtonHTML( page_count, 'pageable-table__button') );
     }
 
-    page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button');
+    page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button--active');
 
     page.forEach(function(element){
         return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
@@ -160,8 +160,9 @@ function onChangePage(event){
     const button = event.target.closest('button') ;
 
     if(button.getAttribute('data-direction') === 'right'){
-        //Haz algo
-        clearTable(return_table);
+
+        clearTable(return_table); //Hacer animación de eliminar
+
         let position = Number( return_table.getAttribute('data-page') ) + 1;
         return_table.setAttribute('data-page', position);
 
@@ -170,6 +171,8 @@ function onChangePage(event){
         page.forEach(function(element){
             return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
         });
+
+        //Colocar la página activa
     }
     else{
         //Haz algo
@@ -290,6 +293,14 @@ function pageableTable( array, page, limit){
 
 function getPages(array, limit){
     return Math.floor( array.length / limit );
+}
+
+
+function setActivePage(current_page, buttons){
+    buttons.forEach(function(button){
+        if(button.innerText == current_page)
+            button
+    });
 }
 
 
