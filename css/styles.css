@@ -26,6 +26,7 @@ html{
     font-family: 'Montserrat', sans-serif;
 }
 body{
+    scroll-behavior: smooth;
     background-color: var(--oxford-blue);
 }
 p{

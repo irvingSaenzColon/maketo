@@ -114,8 +114,6 @@ function onCalculate(event){
         return {date: element.date, pay: time_return};
     });
 
-    console.log(final_return.toFixed(2));
-    console.log(time_return.toFixed(2));
     console.table(dates_result);
 
     investmentPorjection(investment, 10, annual_rate);
@@ -141,7 +139,9 @@ function onCalculate(event){
     });
 
     for(let i = 0; i < limit_page_count; i++){
-        page_number_buttons.appendChild( createButtonHTML(i + 1, 'pageable-table__button') );
+        let btn = createButtonHTML(i + 1, 'pageable-table__button');
+        btn.addEventListener('click', onChangeSpecificPage);
+        page_number_buttons.appendChild( btn );
     }
 
     page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button--active');
@@ -156,7 +156,7 @@ function onChangePage(event){
     
     const button = event.target.closest('button');
     const buttons = page_number_buttons.querySelectorAll('button');
-    const total_pages = dates_result.length / 6;
+    const total_pages = Math.floor(dates_result.length / 6);
 
     //if next button is not 1 then 
     if(button.getAttribute('data-direction') === 'right'){
@@ -164,7 +164,7 @@ function onChangePage(event){
         let position = Number( return_table.getAttribute('data-page') ) ;
         console.log('Avanzando de página')
         //Preventing from user to get outside boundries of page e.g if my pages limit is 8 and users press m 
-        if( total_pages === position)
+        if( total_pages  === position)
             return;
         console.log('Sí se cambió de página')
         position++;
@@ -181,17 +181,89 @@ function onChangePage(event){
         // Setting next page
         return_table.setAttribute('data-page', position);
 
+        if(total_pages === position+1)
+            document.querySelector('button[data-direction="left"]').classList.add('inactive');
+
+        if(position != 1)
+            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
+        
+
+        const page = pageableTable( dates_result, position - 1 , 6 );
+
+        page.forEach(function(element){
+            return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
+        });
+
+        setActivePageForward(position, buttons);
+    }
+    else{
+        let position = Number( return_table.getAttribute('data-page') ) ;
+        
+        //Preventing from user to get outside boundries of page e.g if my pages limit is 8 and users press m 
+        if( position === 1)
+            return;
+        
+        position--;
+
+        // Clearing all objects that i don't need
+        clearTable(return_table); //Make an animation before elements are deleted
+
+        // Setting next page
+        return_table.setAttribute('data-page', position);
+
+        if(0 === (position-1))
+            document.querySelector('button[data-direction="left"]').classList.add('inactive');
+
+        if(position != 1)
+            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
+        
+
         const page = pageableTable( dates_result, position - 1 , 6 );
         console.table(page);
         page.forEach(function(element){
             return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
         });
 
-        setActivePage(position, buttons);
+        setActivePageBackwards(position, buttons);
+    }
+}
+
+function onChangeSpecificPage(event){
+    let position = Number( event.target.innerText );
+    const total_buttons = page_number_buttons.querySelectorAll('button');
+    const total_pages = dates_result.length;
+    
+    if(event.target.previousSibling === null){
+        if(position > 1)
+        {
+            //I need to know if previous element is next to the first one
+            if(position === 2)
+            {
+                //Just move the element to the right and get rid of "previous button"
+                
+            }
+            //Posicionar en medio el número
+            const new_position = Math.floor( total_pages * 0.5 );
+            console.log(new_position);
+        }
+        
+        console.log('Soy el primer botón');
+    }
+    else if(event.target.nextSibling === null){
+        console.log('Soy el último botón');
+
+        if(position < total_buttons){
+            // posicionar el elemento en medio más uno
+
+            const new_position = Math.round(total_pages * 0.5);
+            console.log(new_position);
+
+        }
     }
     else{
-        //Haz algo
+        console.log('Estoy en medio');
     }
+    console.log(event.target.innerText);
 }
 
 // HTML create functions
@@ -292,12 +364,12 @@ function drawArray(array, width, height, x_start, y_start, speed, delay){
 
 // Pageable
 function pageableTable( array, page, limit){
-    let pages = getPages(array, limit);
 
     if(array.length <= limit)
         return array;
 
-    let current_position =  page ? (limit * page) : 0;
+    let current_position =  page ? (page * limit) : 0;
+
     let new_array = [];
     console.log(current_position);
     console.log(pages, page);
@@ -311,17 +383,25 @@ function getPages(array, limit){
     return Math.floor( array.length / limit );
 }
 
-function setActivePage(current_page, buttons){
+function setActivePageForward(current_page, buttons){
     console.log(buttons);
     console.log(current_page);
     buttons.forEach(function(button, index){
-        if(button.innerText == current_page ){
-            if(button.nextSibling === null){
-                for(let i = index - 1; i >= 0; i --)
-                    buttons[i].innerText = Number(buttons[i].innerText) + 1;
-                // button.innerText = Number(button.innerText) + 1;
-            }
-            else if(!button.classList.contains('pageable-table__button--active'))
+        let button_page = Number( button.innerText ) ;
+        console.log(button_page, current_page);
+
+        if(button_page === current_page ){
+        
+            if(!button.classList.contains('pageable-table__button--active'))
+                button.classList.add('pageable-table__button--active');
+
+        }
+        else if(button.nextSibling === null && (button_page + 1) === current_page){
+            
+            for(let i = index - 1; i >= 0; i --) buttons[i].innerText = Number(buttons[i].innerText) + 1;
+            button.innerText = current_page;
+    
+            if(!button.classList.contains('pageable-table__button--active'))
                 button.classList.add('pageable-table__button--active');
         }
         else{
@@ -333,6 +413,38 @@ function setActivePage(current_page, buttons){
     });
 }
 
+function setActivePageBackwards(current_page, buttons){
+    console.log(buttons);
+    console.log(current_page);
+    buttons.forEach(function(button){
+        let button_page = Number( button.innerText ) ;
+        console.log(button_page, current_page);
+
+        if(button_page === current_page ){
+        
+            if(!button.classList.contains('pageable-table__button--active'))
+                button.classList.add('pageable-table__button--active');
+
+        }
+        else if(button.previousSibling === null && (button_page - 1) === current_page){
+            
+            for(let i = 1; i < buttons.length; i ++) buttons[i].innerText = Number(buttons[i].innerText) - 1;
+
+            button.innerText = current_page;
+    
+            if(!button.classList.contains('pageable-table__button--active'))
+                button.classList.add('pageable-table__button--active');
+        }
+        else{
+            button.classList.remove('pageable-table__button--active');
+        }
+      
+    });
+}
+
+function addEventListenerToButtons(buttons_array, event_function){
+   
+}
 
 //Regular functions
 
