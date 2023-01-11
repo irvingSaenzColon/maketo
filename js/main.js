@@ -214,9 +214,11 @@ function onChangePage(event){
         if(0 === (position-1))
             document.querySelector('button[data-direction="left"]').classList.add('inactive');
 
-        if(position != 1)
-            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
-        
+            if(position < total_pages){
+                const right_button = document.querySelector('button[data-direction="right"]');
+                if(right_button.classList.contains('inactive'))
+                    right_button.classList.remove('inactive');
+            }
 
         const page = pageableTable( dates_result, position - 1 , 6 );
         console.table(page);
@@ -231,7 +233,8 @@ function onChangePage(event){
 function onChangeSpecificPage(event){
     let position = Number( event.target.innerText );
     const total_buttons = page_number_buttons.querySelectorAll('button');
-    const total_pages = dates_result.length;
+    const total_pages = dates_result.length / 6;
+    const buttons = page_number_buttons.querySelectorAll('button');
     
     if(event.target.previousSibling === null){
         if(position > 1)
@@ -239,29 +242,63 @@ function onChangeSpecificPage(event){
             //I need to know if previous element is next to the first one
             if(position === 2)
             {
+                buttons.forEach(function(button, index){
+                    
+                    if(index === 1){
+                        return_table.setAttribute('data-page', index +  1);
+                        if(!button.contains('pageable-table__button--active'))
+                            button.classList.add('pageable-table__button--active');
+                    }
+                    else {
+                        if(button.classList.contains('pageable-table__button--active'))
+                            button.classList.remove('pageable-table__button--active');
+                    }
+                    
+                    button.innerText = index + 1;
+                });
                 //Just move the element to the right and get rid of "previous button"
-                
+
             }
-            //Posicionar en medio el número
-            const new_position = Math.floor( total_pages * 0.5 );
-            console.log(new_position);
+            else {
+                //Move the element to the center left and then set the table to that page, also rename inner text buttons
+                buttons.forEach(function(button, index){
+                    button.classList.remove('pageable-table__button--active');
+
+                    button.innerText = (position - 1) + index;
+                    if(button.innerText == position){
+                        if(!button.classList.contains('pageable-table__button--active'))
+                            button.classList.add('pageable-table__button--active');
+                    }
+     
+                });
+
+            }
         }
-        
-        console.log('Soy el primer botón');
     }
     else if(event.target.nextSibling === null){
         console.log('Soy el último botón');
 
         if(position < total_buttons){
-            // posicionar el elemento en medio más uno
+         //It means that we have to move elements to left
+            buttons.forEach(function (button, index) {
+                button.classList.remove('pageable-table__button--active');
 
-            const new_position = Math.round(total_pages * 0.5);
-            console.log(new_position);
+                button.innerText = (position - 1) + index;
+                if (button.innerText == position) {
+                    if (!button.classList.contains('pageable-table__button--active'))
+                        button.classList.add('pageable-table__button--active');
+                }
+
+            });
+
+
+        }
+        else{
 
         }
     }
     else{
-        console.log('Estoy en medio');
+        
     }
     console.log(event.target.innerText);
 }
@@ -372,7 +409,7 @@ function pageableTable( array, page, limit){
 
     let new_array = [];
     console.log(current_position);
-    console.log(pages, page);
+    
     for(let i = current_position; i < (current_position + limit); i++ )
         new_array.push({date: array[i].date, pay: array[i].pay });
 
