@@ -22,6 +22,8 @@ const return_table = document.getElementById('return-table');
 
 const page_number_buttons = document.querySelector('div.pageable-table>div');
 const change_page_buttons = document.querySelectorAll('div.pageable-table>button');
+const next_page = document.querySelector('button[data-direction="right"]');
+const previous_page = document.querySelector('button[data-direction="left"]');
 
 const graph_properties = {
     x_start : 0,
@@ -133,10 +135,7 @@ function onCalculate(event){
 
     return_table.setAttribute('data-page', 1);
 
-    change_page_buttons.forEach(function(button){
-        if(button.getAttribute('data-direction') === 'left')
-            button.classList.add('inactive');
-    });
+   showForBackOnActivePage(1, page_count);
 
     for(let i = 0; i < limit_page_count; i++){
         let btn = createButtonHTML(i + 1, 'pageable-table__button');
@@ -155,86 +154,49 @@ function onCalculate(event){
 function onChangePage(event){
     
     const button = event.target.closest('button');
-    const buttons = page_number_buttons.querySelectorAll('button');
     const total_pages = Math.floor(dates_result.length / 6);
+    const buttons = page_number_buttons.querySelectorAll('button');
+    let direction = button.getAttribute('data-direction') === 'left' ? false : true;
 
-    //if next button is not 1 then 
-    if(button.getAttribute('data-direction') === 'right'){
+    let position = Number( return_table.getAttribute('data-page') ) ;
 
-        let position = Number( return_table.getAttribute('data-page') ) ;
-        console.log('Avanzando de página')
-        //Preventing from user to get outside boundries of page e.g if my pages limit is 8 and users press m 
-        if( total_pages  === position)
-            return;
-        console.log('Sí se cambió de página')
-        position++;
+    button.getAttribute('data-direction') === 'right' ? position++ : position--;
 
-        if(total_pages === position)
-            document.querySelector('button[data-direction="right"]').classList.add('inactive');
+    console.log((position === 1 && !direction));
+    if(total_pages === (position - 1) || ( position === 0 && !direction))
+        return;
+    
+    return_table.setAttribute('data-page', position);
 
-        if(position != 1)
-            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
-        
-        // Clearing all objects that i don't need
-        clearTable(return_table); //Make an animation before elements are deleted
+    removeActiveFromPageable(buttons);
 
-        // Setting next page
-        return_table.setAttribute('data-page', position);
+    //This is gonna execute whenever the las buttons or first is active
+    if((isFirstLimitButton(buttons, position - 1 ) && !direction && position != 2) || (isLastLimitButton(buttons, position - 1 ) && direction) )
+        movePageableDirection( direction, buttons);
 
-        if(total_pages === position+1)
-            document.querySelector('button[data-direction="left"]').classList.add('inactive');
+    setActivePageFromIndex(buttons, position);
 
-        if(position != 1)
-            document.querySelector('button[data-direction="left"]').classList.remove('inactive');
-        
+    showForBackOnActivePage(position, total_pages);
 
-        const page = pageableTable( dates_result, position - 1 , 6 );
-
-        page.forEach(function(element){
-            return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
-        });
-
-        setActivePageForward(position, buttons);
-    }
-    else{
-        let position = Number( return_table.getAttribute('data-page') ) ;
-        
-        //Preventing from user to get outside boundries of page e.g if my pages limit is 8 and users press m 
-        if( position === 1)
-            return;
-        
-        position--;
-
-        // Clearing all objects that i don't need
-        clearTable(return_table); //Make an animation before elements are deleted
-
-        // Setting next page
-        return_table.setAttribute('data-page', position);
-
-        if(0 === (position-1))
-            document.querySelector('button[data-direction="left"]').classList.add('inactive');
-
-            if(position < total_pages){
-                const right_button = document.querySelector('button[data-direction="right"]');
-                if(right_button.classList.contains('inactive'))
-                    right_button.classList.remove('inactive');
-            }
-
-        const page = pageableTable( dates_result, position - 1 , 6 );
-        console.table(page);
-        page.forEach(function(element){
-            return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
-        });
-
-        setActivePageBackwards(position, buttons);
-    }
+    drawTableElements(return_table, dates_result, position, 6);
+    
 }
 
 function onChangeSpecificPage(event){
     let position = Number( event.target.innerText );
-    const total_buttons = page_number_buttons.querySelectorAll('button');
     const total_pages = dates_result.length / 6;
     const buttons = page_number_buttons.querySelectorAll('button');
+    const current_page = Number( return_table.getAttribute('data-page') );
+
+    //If the position is equals to current page then return because there is no reason to do something
+    if(current_page === position)
+        return;
+
+    //Setting table current page
+    return_table.setAttribute('data-page', position);
+
+    //Removing  active class from element
+    removeActiveFromPageable(buttons);
     
     if(event.target.previousSibling === null){
         if(position > 1)
@@ -242,64 +204,48 @@ function onChangeSpecificPage(event){
             //I need to know if previous element is next to the first one
             if(position === 2)
             {
+                //Just move the element to the right and get rid of "previous button"
                 buttons.forEach(function(button, index){
-                    
-                    if(index === 1){
-                        return_table.setAttribute('data-page', index +  1);
-                        if(!button.contains('pageable-table__button--active'))
-                            button.classList.add('pageable-table__button--active');
-                    }
-                    else {
-                        if(button.classList.contains('pageable-table__button--active'))
-                            button.classList.remove('pageable-table__button--active');
-                    }
-                    
                     button.innerText = index + 1;
                 });
-                //Just move the element to the right and get rid of "previous button"
 
             }
             else {
                 //Move the element to the center left and then set the table to that page, also rename inner text buttons
                 buttons.forEach(function(button, index){
-                    button.classList.remove('pageable-table__button--active');
-
                     button.innerText = (position - 1) + index;
-                    if(button.innerText == position){
-                        if(!button.classList.contains('pageable-table__button--active'))
-                            button.classList.add('pageable-table__button--active');
-                    }
-     
                 });
-
             }
         }
     }
     else if(event.target.nextSibling === null){
-        console.log('Soy el último botón');
-
-        if(position < total_buttons){
+        console.log(position, buttons.length);
+        if(position === total_pages - 1){
+            console.log('Soy el penúltimo');
+            buttons.forEach(function(button, index){
+                button.innerText = position + (index - 2);
+            });
+        }
+        else if(position === total_pages){
+            buttons.forEach(function(button, index){
+                button.innerText = position + (index - 3);
+            });
+        }
+        else {
          //It means that we have to move elements to left
             buttons.forEach(function (button, index) {
-                button.classList.remove('pageable-table__button--active');
-
                 button.innerText = (position - 1) + index;
-                if (button.innerText == position) {
-                    if (!button.classList.contains('pageable-table__button--active'))
-                        button.classList.add('pageable-table__button--active');
-                }
 
             });
-
-
-        }
-        else{
-
         }
     }
-    else{
-        
-    }
+
+    showForBackOnActivePage(position, total_pages);
+
+    setActivePageFromIndex(buttons, position);
+
+    drawTableElements(return_table, dates_result, position, 6);
+
     console.log(event.target.innerText);
 }
 
@@ -336,6 +282,16 @@ function clearTable(table_element){
 }
 
 // Drawing Functions
+function drawTableElements(table, array, position, limit){
+    clearTable(table);
+
+    let page = pageableTable(array, position - 1, limit);
+
+    page.forEach(function (element) {
+        table.appendChild(createTableRowHTML(element.date, element.pay.toFixed(2)));
+    });
+}
+
 function drawGrid(graph, linesX, linesY){
 
     const height = graph.height;
@@ -408,7 +364,6 @@ function pageableTable( array, page, limit){
     let current_position =  page ? (page * limit) : 0;
 
     let new_array = [];
-    console.log(current_position);
     
     for(let i = current_position; i < (current_position + limit); i++ )
         new_array.push({date: array[i].date, pay: array[i].pay });
@@ -420,42 +375,20 @@ function getPages(array, limit){
     return Math.floor( array.length / limit );
 }
 
-function setActivePageForward(current_page, buttons){
-    console.log(buttons);
-    console.log(current_page);
-    buttons.forEach(function(button, index){
-        let button_page = Number( button.innerText ) ;
-        console.log(button_page, current_page);
-
-        if(button_page === current_page ){
-        
-            if(!button.classList.contains('pageable-table__button--active'))
-                button.classList.add('pageable-table__button--active');
-
-        }
-        else if(button.nextSibling === null && (button_page + 1) === current_page){
-            
-            for(let i = index - 1; i >= 0; i --) buttons[i].innerText = Number(buttons[i].innerText) + 1;
-            button.innerText = current_page;
+function movePageableDirection(direction, buttons){
+    let increment = 0;
+    //If it is true it means is moving right
+    direction ? increment = 1 : increment = -1;
     
-            if(!button.classList.contains('pageable-table__button--active'))
-                button.classList.add('pageable-table__button--active');
-        }
-        else{
-            button.classList.remove('pageable-table__button--active');
-        }
-
-        
-
+    buttons.forEach(function (button) {
+        button.innerText = Number(button.innerText) + increment;
     });
 }
 
 function setActivePageBackwards(current_page, buttons){
-    console.log(buttons);
-    console.log(current_page);
+    
     buttons.forEach(function(button){
         let button_page = Number( button.innerText ) ;
-        console.log(button_page, current_page);
 
         if(button_page === current_page ){
         
@@ -479,8 +412,47 @@ function setActivePageBackwards(current_page, buttons){
     });
 }
 
-function addEventListenerToButtons(buttons_array, event_function){
-   
+function showForBackOnActivePage(page, total_pages){
+    
+    if(page === 1)
+        previous_page.classList.add('inactive');
+    else if(page === total_pages)
+        next_page.classList.add('inactive');
+    else{
+        if(next_page.classList.contains('inactive'))
+            next_page.classList.remove('inactive')
+        if(previous_page.classList.contains('inactive'))
+            previous_page.classList.remove('inactive');
+    }
+}
+
+function setActivePageFromIndex(buttons, page){
+
+    const button = [...buttons].find(function(button){
+        if(button.innerText == page)
+            return button;
+    });
+
+    button?.classList.add('pageable-table__button--active');
+}
+
+function isLastLimitButton(buttons, page){
+    return [...buttons].some(function(button){
+        return (button.nextSibling === null && button.innerText == page);
+    });
+}
+
+function isFirstLimitButton(buttons, page){
+    return [...buttons].some(function(button){
+        return (button.previousSibling === null && button.innerText == page);
+    });
+}
+
+function removeActiveFromPageable(buttons){
+    buttons.forEach(function(button){
+        if(button.classList.contains('pageable-table__button--active'))
+            button.classList.remove('pageable-table__button--active');
+    })
 }
 
 //Regular functions

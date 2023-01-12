@@ -5,7 +5,9 @@
 // 08/01/2023
 0.- colocar la página activa.                                       --Hecho
 1.- paginación con botones izquierda y derecha                      --Hecho
-2.- paginacion haciendo click al botón del número de la página      --En progreso
+2.- paginacion haciendo click al botón del número de la página      --Hecho
 2.- actualizar los botones de las páginas cuando avanza o retrocede --Hecho
-3.- poder volver consultar otra inversión                           --Falta
-4.- agregar animaciones                                             --Falta
+
+// 12/01/2023
+1.- poder volver consultar otra inversión                           --Falta
+2.- agregar animaciones                                             --Falta
