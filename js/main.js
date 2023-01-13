@@ -25,6 +25,8 @@ const change_page_buttons = document.querySelectorAll('div.pageable-table>button
 const next_page = document.querySelector('button[data-direction="right"]');
 const previous_page = document.querySelector('button[data-direction="left"]');
 
+const burger_buton = document.querySelector('button.nav__burger');
+
 const graph_properties = {
     x_start : 0,
     y_start: 0,
@@ -53,7 +55,9 @@ canvas.addEventListener('mousemove', getCanvasCoordinates);
 canvas.addEventListener('mouseenter', onCanvasEnter);
 canvas.addEventListener('mouseleave', onCanvasLeave);
 
-calculate_form.addEventListener('submit', onCalculate)
+calculate_form.addEventListener('submit', onCalculate);
+
+burger_buton.addEventListener('click', onClickBurger);
 
 // Resize functions
 function onWindowResize(event){
@@ -98,6 +102,10 @@ function onCanvasEnter(event){
  }
 
 //  Click functions
+function onClickBurger(event){
+    console.log('Me hicieron click');
+}
+
 function onCalculate(event){
     event.preventDefault();
     

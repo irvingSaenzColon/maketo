@@ -25,14 +25,80 @@ html{
     font-size: 62.5%;
     font-family: 'Montserrat', sans-serif;
 }
+
+header{
+    position: sticky;
+    top: 0;
+}
+
 body{
     scroll-behavior: smooth;
     background-color: var(--oxford-blue);
 }
+
 p{
     font-size: 1.4rem;
     color: var(--glaucous);
     margin-bottom: 16px;
+}
+
+/* navbar */
+
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style-type: none;
+    padding: 8px 16px;
+    background-color: var(--rich-black-fogra-29);
+}
+
+.nav__logo{
+    font-size: 2.4rem;
+    font-family: 'Permanent Marker', cursive;
+    text-decoration: none;
+    color: var(--white);
+}
+
+.nav__burger{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.nav__burger>div{
+    display: flex;
+    width: 100%;
+    height: 5px;
+}
+
+.nav__burger>span{
+    width: 100%;
+    height: 5px;
+    border-radius: var(--border-sm);
+    background-color: var(--pale-cerulean);
+}
+
+.nav__burger>div>span{
+    display: block;
+    width: 50%;
+    height: 100%;
+    background-color: var(--pale-cerulean);
+}
+
+.nav__burger>div>span:nth-child(1){
+    border-top-left-radius: var(--border-sm);
+    border-bottom-left-radius: var(--border-sm);
+}
+
+.nav__burger>div>span:nth-child(2){
+    border-top-right-radius: var(--border-sm);
+    border-bottom-right-radius: var(--border-sm);
 }
 
 /* form */
@@ -242,6 +308,7 @@ p{
 .inactive{
     display: none;
 }
+
 #coordinates{
     position: fixed;
     right: 50px;
