@@ -124,8 +124,6 @@ function onCalculate(event){
         return {date: element.date, pay: time_return};
     });
 
-    console.table(dates_result);
-
     investmentPorjection(investment, 10, annual_rate);
 
     event.target.classList.add('inactive');
@@ -154,8 +152,15 @@ function onCalculate(event){
     page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button--active');
 
     page.forEach(function(element){
-        return_table.appendChild( createTableRowHTML(element.date, element.pay.toFixed(2)) );
+        const tr = createTableRowHTML(element.date, element.pay.toFixed(2));
+        tr.classList.add('inactive');
+        return_table.appendChild( tr );
     });
+
+    const table_rows = return_table.querySelectorAll('tr');
+    return_table.setAttribute('height', (table_rows.length * 35) + 35);
+
+    showPage(table_rows);
 
 }
 
@@ -186,7 +191,17 @@ function onChangePage(event){
 
     showForBackOnActivePage(position, total_pages);
 
-    drawTableElements(return_table, dates_result, position, 6);
+    let table_rows = return_table.querySelectorAll('table>tr');
+
+    console.log(table_rows);
+    hidePage(table_rows);
+
+    setTimeout(function(){
+        removePage(table_rows);
+        drawTableElements(return_table, dates_result, position, 6);  
+    }, 100*table_rows.length);
+
+    //drawTableElements(return_table, dates_result, position, 6);
     
 }
 
@@ -296,8 +311,13 @@ function drawTableElements(table, array, position, limit){
     let page = pageableTable(array, position - 1, limit);
 
     page.forEach(function (element) {
-        table.appendChild(createTableRowHTML(element.date, element.pay.toFixed(2)));
+        const tr = createTableRowHTML(element.date, element.pay.toFixed(2))
+        tr.classList.add('inactive');
+        table.appendChild( tr );
     });
+
+    const table_rows = table.querySelectorAll('table>tr');
+    showPage(table_rows);
 }
 
 function drawGrid(graph, linesX, linesY){
@@ -364,6 +384,37 @@ function drawArray(array, width, height, x_start, y_start, speed, delay){
 }
 
 // Pageable
+function showPage(table_rows){
+    console.log(table_rows);
+    [...table_rows].forEach(function(row, index){
+        setTimeout(function(){
+            row.classList.remove('inactive');
+            row.classList.add('table-row--in');
+        }, 100 * index);
+    });
+
+    setTimeout(function(){
+        [...table_rows].forEach(function(row){
+            row.classList.remove('table-row--in');
+        });    
+    }, 100 * table_rows.length);
+    
+}
+
+function hidePage(table_rows){
+    [...table_rows].forEach(function(row, index){
+        setTimeout(function(){
+            row.classList.add('table-row--out');
+        }, index * 100);
+    });
+}
+
+function removePage(table_rows){
+    [...table_rows].forEach(function(row){
+        row.remove();
+    });
+}
+
 function pageableTable( array, page, limit){
 
     if(array.length <= limit)

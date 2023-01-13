@@ -214,6 +214,7 @@ p{
 /* table container */
 .tables-container{
     padding: 24px 8px;
+    overflow: hidden;
 }
 
 /* Table */
@@ -230,6 +231,20 @@ p{
 
 .investment__table th{
     color: var(--white);
+}
+
+.table-row--in{
+    animation-name: table-row-in;
+    animation-duration: 0.25s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease;
+}
+
+.table-row--out{
+    animation-name: table-row-out;
+    animation-duration: 0.25s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease;
 }
 
 .investment__table td{
@@ -313,4 +328,26 @@ p{
     position: fixed;
     right: 50px;
     bottom: 0;
+}
+
+@keyframes table-row-in{
+    0%{
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100%{
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes table-row-out{
+    0%{
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100%{
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
