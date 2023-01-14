@@ -15,7 +15,7 @@
 }
 /* Reset properties from html elements */
 *{
-    border: 0;
+    padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
@@ -29,6 +29,7 @@ html{
 header{
     position: sticky;
     top: 0;
+    z-index: 101;
 }
 
 body{
@@ -36,10 +37,24 @@ body{
     background-color: var(--oxford-blue);
 }
 
+aside{
+    position: fixed;
+    width: 100%;
+    max-width: 450px;
+    height: calc(100vh - 52px);
+    padding: 16px 8px;
+    background-color: var(--rich-black-fogra-28);
+    z-index: 100;
+}
+
 p{
     font-size: 1.4rem;
     color: var(--glaucous);
     margin-bottom: 16px;
+}
+
+.no-overflow{
+    overflow: hidden;
 }
 
 /* navbar */
@@ -51,6 +66,7 @@ p{
     list-style-type: none;
     padding: 8px 16px;
     background-color: var(--rich-black-fogra-29);
+    z-index: 101;
 }
 
 .nav__logo{
@@ -101,16 +117,69 @@ p{
     border-bottom-right-radius: var(--border-sm);
 }
 
+/* aside menu */
+.submenu--in{
+    animation-name: submenu-in;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+}
+
+.submenu--out{
+    animation-name: submenu-out;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+}
+
+.flex{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.submenu{
+    list-style-type: none;
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+}
+
+.submenu>li>a{
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--pale-cerulean);
+}
+
+.aside__footer{
+    text-align: center;
+}
+
+.aside__footer>p{
+    font-size: 1.6rem;
+    color: var(--pale-cerulean)
+}
+
+.aside__footer>button{
+    padding: 8px;
+    border: 1px solid var(--upsdell-red);
+    border-radius: var(--border-sm);
+    width: 150px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    background-color: var(--radical-red);
+}
+
 /* form */
 .form{
     padding: 24px 16px;
     width: 100%;
     max-width: 400px;
-    margin: 24px auto;
+    margin: 0 auto 24px;
     border-radius: var(--border-sm);
     background-color: var(--oxford-blue);
-    
 }
+
 .form>label{
     font-size: 1.6rem;
     color: var(--pale-cerulean);
@@ -168,7 +237,7 @@ p{
 /* graph  styles */
 .container{
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     max-width: 850px;
     margin: 0 auto;
@@ -183,6 +252,7 @@ p{
 .container__tab{
     cursor: pointer;
     padding: 16px;
+    border: none;
     border-bottom: var(--border-sm) solid var(--oxford-blue);
     font-size: 1.7rem;
     font-weight: 700;
@@ -349,5 +419,22 @@ p{
     100%{
         transform: translateX(100%);
         opacity: 0;
+    }
+}
+
+@keyframes submenu-in {
+    0%{
+        transform: translateY(-100%);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+@keyframes submenu-out {
+    0%{
+        transform: translateY(0);
+    }
+    100%{
+        transform: translateY(-100%);
     }
 }

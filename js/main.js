@@ -1,6 +1,9 @@
-const arr = [100, 650, 840, 255, 360, 460, 760, 535, 10, 66, 466, 350];
-
 // Element from document
+const body = document.querySelector('body');
+
+    // Submenu
+const aside_menu = document.querySelector('aside.flex');
+
     // canvas elements
 const canvas = document.getElementById('graph');
 const context = canvas.getContext('2d');
@@ -103,7 +106,27 @@ function onCanvasEnter(event){
 
 //  Click functions
 function onClickBurger(event){
-    console.log('Me hicieron click');
+
+    if(aside_menu.classList.contains('inactive')){
+        aside_menu.classList.remove('inactive');
+        body.classList.add('no-overflow');
+        aside_menu.classList.add('submenu--in');
+
+        setTimeout(function(){
+            aside_menu.classList.remove('submenu--in');
+        }, 500);
+    }
+    else{
+        aside_menu.classList.add('submenu--out');
+
+        setTimeout(function(){
+            aside_menu.classList.remove('submenu--out');
+            aside_menu.classList.add('inactive') ;
+            body.classList.remove('no-overflow');
+        }, 500);
+    }
+        
+        
 }
 
 function onCalculate(event){
@@ -124,6 +147,8 @@ function onCalculate(event){
         return {date: element.date, pay: time_return};
     });
 
+    console.table(dates_result);
+
     investmentPorjection(investment, 10, annual_rate);
 
     event.target.classList.add('inactive');
@@ -137,7 +162,9 @@ function onCalculate(event){
 
     let page_count = getPages(dates_result, 6) ;
 
-    let limit_page_count = page_count > 4 ? 4 : page_count;
+    page_count = page_count === 0 ? 1 : page_count;
+    
+    let limit_page_count = (page_count > 4) ? 4 : page_count;
 
     return_table.setAttribute('data-page', 1);
 
@@ -148,7 +175,7 @@ function onCalculate(event){
         btn.addEventListener('click', onChangeSpecificPage);
         page_number_buttons.appendChild( btn );
     }
-
+    
     page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button--active');
 
     page.forEach(function(element){
@@ -175,8 +202,7 @@ function onChangePage(event){
 
     button.getAttribute('data-direction') === 'right' ? position++ : position--;
 
-    console.log((position === 1 && !direction));
-    if(total_pages === (position - 1) || ( position === 0 && !direction))
+    if(total_pages === (position - 1) || ( position === 0 && !direction) || !total_pages)
         return;
     
     return_table.setAttribute('data-page', position);
@@ -385,7 +411,7 @@ function drawArray(array, width, height, x_start, y_start, speed, delay){
 
 // Pageable
 function showPage(table_rows){
-    console.log(table_rows);
+    
     [...table_rows].forEach(function(row, index){
         setTimeout(function(){
             row.classList.remove('inactive');
@@ -431,7 +457,7 @@ function pageableTable( array, page, limit){
 }
 
 function getPages(array, limit){
-    return Math.floor( array.length / limit );
+    return Math.round( array.length / limit );
 }
 
 function movePageableDirection(direction, buttons){
@@ -472,11 +498,25 @@ function setActivePageBackwards(current_page, buttons){
 }
 
 function showForBackOnActivePage(page, total_pages){
-    
-    if(page === 1)
+    if(page === 1 && total_pages > 1)
+    {
         previous_page.classList.add('inactive');
-    else if(page === total_pages)
+        if(next_page.classList.contains('inactive'))
+            next_page.classList.remove('inactive');
+    }
+    else if(page === total_pages && total_pages > 1){
         next_page.classList.add('inactive');
+        if(previous_page.classList.contains('inactive'))
+            previous_page.classList.remove('inactive');
+    }
+    else if(total_pages === 1){
+
+        if(!next_page.classList.contains('inactive'))
+            next_page.classList.add('inactive')
+
+        if(!previous_page.classList.contains('inactive'))
+            previous_page.classList.add('inactive')
+    }
     else{
         if(next_page.classList.contains('inactive'))
             next_page.classList.remove('inactive')

@@ -8,6 +8,12 @@
 2.- paginacion haciendo click al botón del número de la página      --Hecho
 2.- actualizar los botones de las páginas cuando avanza o retrocede --Hecho
 
-// 12/01/2023
+// 13/01/2023
 1.- poder volver consultar otra inversión                           --Falta
-2.- agregar animaciones                                             --Falta
+2.- agregar animaciones                                             --Hecho
+3.- Hacer una navbar                                                --Hecho
+4.- Submenu se muestra con animaciones                              --Hecho
+
+
+//Bugs
+cuando tengo solamente 2 páginas y hago click se me rompe.
