@@ -1,6 +1,6 @@
 // 07/01/2023
-1.- calcular y mostrar resultados
-2.- hacer validaciones
+1.- calcular y mostrar resultados                                   --Hecho
+2.- hacer validaciones                                              --Falta
 
 // 08/01/2023
 0.- colocar la página activa.                                       --Hecho
@@ -9,11 +9,18 @@
 2.- actualizar los botones de las páginas cuando avanza o retrocede --Hecho
 
 // 13/01/2023
-1.- poder volver consultar otra inversión                           --Falta
+1.- poder volver consultar otra inversión                           --Hecho
 2.- agregar animaciones                                             --Hecho
 3.- Hacer una navbar                                                --Hecho
 4.- Submenu se muestra con animaciones                              --Hecho
+5.- validar los inputs para que acepte dos decimales                --Hecho
+6.- validar que en el rendimiento solamente se pueda de 0 a 100     --Hecho
+7.- validar que los campos estén llenos para realizar operaciones   --Hecho
+
+Cosas por hacer
+Agregar animaciones para identificar el input que le falta
+
 
 
 //Bugs
-cuando tengo solamente 2 páginas y hago click se me rompe.
+cuando tengo solamente 2 páginas y hago click se me rompe.          --Resuelto  14/01/2023

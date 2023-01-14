@@ -172,12 +172,27 @@ p{
 
 /* form */
 .form{
+    position: fixed;
     padding: 24px 16px;
     width: 100%;
     max-width: 400px;
     margin: 0 auto 24px;
     border-radius: var(--border-sm);
     background-color: var(--oxford-blue);
+}
+
+.form--in{
+    animation-name: form-in;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+}
+
+.form--out{
+    animation-name: form-out;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
 }
 
 .form>label{
@@ -430,11 +445,29 @@ p{
         transform: translateY(0);
     }
 }
+
 @keyframes submenu-out {
     0%{
         transform: translateY(0);
     }
     100%{
         transform: translateY(-100%);
+    }
+}
+
+@keyframes form-in {
+    0%{
+        transform: translateX(-100%);
+    }
+    100%{
+        transform: translateX(0);
+    }
+}
+@keyframes form-out {
+    0%{
+        transform: translateX(0);
+    }
+    100%{
+        transform: translateX(-100%);
     }
 }

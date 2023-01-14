@@ -38,24 +38,24 @@
         <main>
             <form class="form" autocomplete="off">
                 <label for="investment">Inversión</label>
-                <input type="number" name="investment" placeholder="Ingrese el monto que desea invertir">
+                <input id="investment" type="number" name="investment" placeholder="Ingrese el monto que desea invertir">
                 <label for="yield">Rendimiento</label>
-                <input type="text" name="yield" placeholder="Ingrese el rendimiento anual">
+                <input id="yield" type="number" max="100" min="0" name="yield" placeholder="Ingrese el rendimiento anual">
                 <label for="investment_time">Tiempo de inversión</label>
-                <select name="investment_time" id="">
-                    <option value="1">  1  año</option>
-                    <option value="2">  2  años</option>
-                    <option value="3">  3  años</option>
-                    <option value="4">  4  años</option>
-                    <option value="5">  5  años</option>
-                    <option value="6">  6  años</option>
-                    <option value="7">  7  años</option>
-                    <option value="8">  8  años</option>
-                    <option value="9">  9  años</option>
+                <select id="investment_time" name="investment_time" >
+                    <option value="1">  1 año</option>
+                    <option value="2">  2 años</option>
+                    <option value="3">  3 años</option>
+                    <option value="4">  4 años</option>
+                    <option value="5">  5 años</option>
+                    <option value="6">  6 años</option>
+                    <option value="7">  7 años</option>
+                    <option value="8">  8 años</option>
+                    <option value="9">  9 años</option>
                     <option value="10">10 años</option>
                 </select>
                 <label for="time_limit">Pago de intereses</label>
-                <select name="time_limit" id="">
+                <select id="time_limit" name="time_limit">
                     <option value="weekly">Semanal</option>
                     <option value="biweekly">Quincenal</option>
                     <option value="monthly">Mensual</option>

@@ -13,10 +13,10 @@ const graph_container = document.querySelector('section.container');
 
     // Form elements
 const calculate_form = document.querySelector('form.form');
-const investment_input = document.querySelector('input[name = "investment"]');
-const annual_rate_input = document.querySelector('input[name = "yield"]');
-const inv_time_select = document.querySelector('select[name = "investment_time"]');
-const time_limit_select = document.querySelector('select[name = "time_limit"]');
+const investment_input = document.getElementById('investment');
+const annual_rate_input = document.getElementById('yield');
+const inv_time_select = document.getElementById('investment_time');
+const time_limit_select = document.getElementById('time_limit');
 
 
 const initial_table = document.getElementById('initial-table');
@@ -29,6 +29,7 @@ const next_page = document.querySelector('button[data-direction="right"]');
 const previous_page = document.querySelector('button[data-direction="left"]');
 
 const burger_buton = document.querySelector('button.nav__burger');
+const new_calculus = document.querySelector('div.aside__footer>button');
 
 const graph_properties = {
     x_start : 0,
@@ -61,6 +62,12 @@ canvas.addEventListener('mouseleave', onCanvasLeave);
 calculate_form.addEventListener('submit', onCalculate);
 
 burger_buton.addEventListener('click', onClickBurger);
+new_calculus.addEventListener('click', onNewCalculus);
+
+investment_input.addEventListener('keypress', onDecimalInput);
+annual_rate_input.addEventListener('keypress',  onDecimalInput);
+
+annual_rate_input.addEventListener('keyup',  onDecimalHundred);
 
 // Resize functions
 function onWindowResize(event){
@@ -105,6 +112,33 @@ function onCanvasEnter(event){
  }
 
 //  Click functions
+function onNewCalculus(event){
+    // closing aside menu
+    aside_menu.classList.add('submenu--out');
+
+    setTimeout(function(){
+        aside_menu.classList.remove('submenu--out');
+        aside_menu.classList.add('inactive') ;
+        body.classList.remove('no-overflow');
+
+        calculate_form.classList.add('form--in');
+
+        if( calculate_form.classList.contains('form--out') )
+            calculate_form.classList.remove('form--out');
+
+        calculate_form.classList.remove('inactive');
+
+    }, 500);
+
+    // Clearing the table
+    clearTable(return_table);
+    // Clearing pages
+    clearPeagable(page_number_buttons.querySelectorAll('button'));
+    //Setting next and preovios button to a default state
+    resetFoBaButtons([next_page, previous_page]);
+
+}
+
 function onClickBurger(event){
 
     if(aside_menu.classList.contains('inactive')){
@@ -131,10 +165,21 @@ function onClickBurger(event){
 
 function onCalculate(event){
     event.preventDefault();
+
     
     const investment = Number(investment_input.value);
     const annual_rate = Number(annual_rate_input.value) / 100;
+
+    //Create an animation to show it.
+    if(investment === 0 || annual_rate === 0)
+        return;
     
+    // Hide form element
+    calculate_form.classList.add('form--out');
+    setTimeout(function(){
+        calculate_form.classList.add('inactive');
+    }, 500);
+
     const years = Number(inv_time_select.value);
     const time_limit = time_limit_select.value;
     
@@ -143,15 +188,13 @@ function onCalculate(event){
 
     dates_result = calculatePayDay(years, time_limit);
 
-    dates_result = dates_result.map(function(element, index){
+    dates_result = dates_result.map(function(element){
         return {date: element.date, pay: time_return};
     });
 
     console.table(dates_result);
 
     investmentPorjection(investment, 10, annual_rate);
-
-    event.target.classList.add('inactive');
 
     graph_container.classList.remove('inactive');
 
@@ -268,14 +311,15 @@ function onChangeSpecificPage(event){
         }
     }
     else if(event.target.nextSibling === null){
-        console.log(position, buttons.length);
+        
         if(position === total_pages - 1){
-            console.log('Soy el penúltimo');
+        
             buttons.forEach(function(button, index){
                 button.innerText = position + (index - 2);
             });
         }
-        else if(position === total_pages){
+        else if(position === total_pages && total_pages != buttons.length){
+        
             buttons.forEach(function(button, index){
                 button.innerText = position + (index - 3);
             });
@@ -296,6 +340,28 @@ function onChangeSpecificPage(event){
     drawTableElements(return_table, dates_result, position, 6);
 
     console.log(event.target.innerText);
+}
+
+// Keypress functions
+function onDecimalInput(event){
+    console.log(event);
+    const output = event.target.value;
+    let decimal = 0;
+    if(output.indexOf('.')> -1 )
+        decimal = output.substring(output.indexOf('.'), output.length - 1);
+
+    if(decimal.length > 1 )
+        event.preventDefault();
+}
+
+// Keyup functions
+function onDecimalHundred(event){
+    const output = event.target.value;
+
+    if(Number(output)> 100)
+        event.target.value = 100;
+    else if(Number(output) < 1 )
+        event.target.value = 1;
 }
 
 // HTML create functions
@@ -321,12 +387,26 @@ function createButtonHTML(value, class_name){
     return button;
 }
 
+function resetFoBaButtons(buttons){
+    buttons.forEach(function(button){
+        if(button.classList.contains('inactive'))
+            button.classList.remove('inactive');
+    });
+}
+
+
 // HTML clear table
 function clearTable(table_element){
     const tr = table_element.querySelectorAll('table>tr');
     
     tr.forEach(function(element){
         table_element.removeChild(element);
+    });
+}
+
+function clearPeagable(buttons){
+    buttons.forEach(function(button){
+        button.remove();
     });
 }
 
