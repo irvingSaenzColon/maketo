@@ -8,7 +8,7 @@
 2.- paginacion haciendo click al botón del número de la página      --Hecho
 2.- actualizar los botones de las páginas cuando avanza o retrocede --Hecho
 
-// 13/01/2023
+// 14/01/2023
 1.- poder volver consultar otra inversión                           --Hecho
 2.- agregar animaciones                                             --Hecho
 3.- Hacer una navbar                                                --Hecho
@@ -16,11 +16,17 @@
 5.- validar los inputs para que acepte dos decimales                --Hecho
 6.- validar que en el rendimiento solamente se pueda de 0 a 100     --Hecho
 7.- validar que los campos estén llenos para realizar operaciones   --Hecho
+8.- Agregar animaciones para identificar el error                   --Hecho
+9.- El último elemento de el arreglo de dates_result debe tener     --Hecho
+    el retorno más la inversión
+10.- hacer navbar responsivo                                        --Hecho
+11.- borrar los rows                                                --Hecho
+12.- Cambiar texto de Pagos                                         --Hecho
 
-Cosas por hacer
-Agregar animaciones para identificar el input que le falta
-
-
+//Cosas por hacer
+- Hacer página de "acerca de"                                   --En progreso
+- graficar elementos                                            --Falta
+- simplificar el código (if anidado)                            --Falta
 
 //Bugs
-cuando tengo solamente 2 páginas y hago click se me rompe.          --Resuelto  14/01/2023
+al hacer click en el element final hay un error, se re calculan los número fuera de los limites --Hecho

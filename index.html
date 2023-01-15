@@ -11,18 +11,20 @@
     </head>
     <body>
         <header>
-            <nav>
-                <ul class="nav">
-                    <a class="nav__logo" href="index.html">Maketo</a>
-                    <button class="nav__burger">
+            <nav class="nav">
+                <a class="nav__logo" href="index.html">Maketo</a>
+                <button aria-label="burger button" class="nav__burger">
+                    <span></span>
+                    <div>
                         <span></span>
-                        <div>
-                            <span></span>
-                            <span></span>
-                        </div>
                         <span></span>
-                    </button>
-                </ul>
+                    </div>
+                    <span></span>
+                </button>
+                <div class="nav__right">
+                    <a class="nav__link" href="index.html">Inicio</a>
+                    <a class="nav__link" href="about.html">Acerca de</a>
+                </div>
             </nav>
         </header>
         <aside class="flex inactive">
@@ -79,12 +81,20 @@
                                 <th>Inversión Inicial</th>
                                 <th>Tasa anual de interés</th>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </table>
                         <p>Lo que usted ganaría al final de su periodo de inversión sería lo siguiente:</p>
                         <table id="worth-table" class="investment__table">
                             <tr>
                                 <th>Ganancia</th>
                                 <th>Retorno de inversión</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
                             </tr>
                         </table>
                         <h2 class="section__title">Pagos</h2>
@@ -109,6 +119,10 @@
                             </button>
                         </div>
 
+                    </div>
+                    <div class="about-page">
+                        <h2 class="section__title">Acerca de</h2>
+                        <p>Este proyecto hace un calculo básico de una inversión dada una tasa de interes anual</p>
                     </div>
                     <canvas id="graph" class="graph__canvas inactive">
                     </canvas>

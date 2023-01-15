@@ -117,6 +117,24 @@ p{
     border-bottom-right-radius: var(--border-sm);
 }
 
+.nav__right{
+    display: none;
+    gap: 10px;
+    font-size: 1.5rem;
+}
+.nav__right>a{
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+.nav__link{
+    color: var(--pale-cerulean);
+}
+
+.nav__link:hover{
+    background-color: var(--rich-black-fogra-28);
+}
+
 /* aside menu */
 .submenu--in{
     animation-name: submenu-in;
@@ -175,7 +193,6 @@ p{
     position: fixed;
     padding: 24px 16px;
     width: 100%;
-    max-width: 400px;
     margin: 0 auto 24px;
     border-radius: var(--border-sm);
     background-color: var(--oxford-blue);
@@ -196,9 +213,14 @@ p{
 }
 
 .form>label{
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 350px;
     font-size: 1.6rem;
     color: var(--pale-cerulean);
 }
+
 .form>input,
 .form>select{
     display: block;
@@ -212,19 +234,29 @@ p{
     color: var(--pale-cerulean);
     background-color: var(--rich-black-fogra-29);
 }
+
 .form>input::placeholder{
     color: var(--glaucous);
 }
+
 .form>input:hover,
 .form>select:hover{
     border: 1px solid var(--true-blue);
     color: var(--glaucous);
 }
+
 .form>input:focus,
 .form>select:focus{
     outline: none;
     color: var(--true-blue);
     border: 1px solid var(--true-blue);
+}
+
+.form__input--error{
+    animation-name: input-error;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
 }
 
 .form>button{
@@ -258,6 +290,21 @@ p{
     margin: 0 auto;
     padding: 8px 16px;
 }
+
+.container--fade-in{
+    animation-name: container-fade-in;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+}
+
+.container--fade-out{
+    animation-name: container-fade-out;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+}
+
 .container--column{
     flex-direction: column;
 }
@@ -469,5 +516,54 @@ p{
     }
     100%{
         transform: translateX(-100%);
+    }
+}
+
+@keyframes input-error {
+    0%{
+        transform: translateX(10px);
+        border: 1px solid var(--radical-red);
+    }
+    25%{
+        transform: translateX(-10px);
+    }
+    50%{
+        transform: translateX(5px);
+        border: 1px solid var(--glaucous);
+    }
+    75%{
+        transform: translateX(-5px);
+    }
+    100%{
+        transform: translateX(0px);
+        border: 1px solid var(--radical-red);
+    }
+}
+@keyframes container-fade-out {
+    0%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+@keyframes container-fade-in {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+@media screen and (min-width: 800px){
+    .nav__right{
+        display: flex;
+    }
+    .nav__burger{
+        display: none;
+    }
+    .flex{
+        display: none;
     }
 }

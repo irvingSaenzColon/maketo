@@ -9,7 +9,7 @@ const canvas = document.getElementById('graph');
 const context = canvas.getContext('2d');
 
 const coordinates = document.getElementById('coordinates');
-const graph_container = document.querySelector('section.container');
+const container = document.querySelector('section.container');
 
     // Form elements
 const calculate_form = document.querySelector('form.form');
@@ -81,7 +81,7 @@ function onWindowLoad(event){
         button.addEventListener('click', onChangePage);
     })
 
-    // if(graph_container.classList.contains('inactive'))
+    // if(container.classList.contains('inactive'))
     //     return;
     // setCanvasResponsiveSize();
 
@@ -113,13 +113,28 @@ function onCanvasEnter(event){
 
 //  Click functions
 function onNewCalculus(event){
-    // closing aside menu
     aside_menu.classList.add('submenu--out');
 
+    //if it is already open just close mobile menu
+    if(!calculate_form.classList.contains('inactive')){
+        setTimeout(function(){
+            aside_menu.classList.remove('submenu--out');
+            aside_menu.classList.add('inactive') ;
+            body.classList.remove('no-overflow');
+        }, 500);
+        return;
+    }
+
+    // closing aside menu
+    
+    container.classList.add('container--fade-out');
+    
     setTimeout(function(){
         aside_menu.classList.remove('submenu--out');
         aside_menu.classList.add('inactive') ;
         body.classList.remove('no-overflow');
+        container.classList.add('inactive');
+        container.classList.remove('container--fade-out');
 
         calculate_form.classList.add('form--in');
 
@@ -136,6 +151,8 @@ function onNewCalculus(event){
     clearPeagable(page_number_buttons.querySelectorAll('button'));
     //Setting next and preovios button to a default state
     resetFoBaButtons([next_page, previous_page]);
+
+
 
 }
 
@@ -170,10 +187,12 @@ function onCalculate(event){
     const investment = Number(investment_input.value);
     const annual_rate = Number(annual_rate_input.value) / 100;
 
-    //Create an animation to show it.
+    //if investment or annual rate is cero then make an animation in order to give feedback
+    inputsValidate(investment, annual_rate);
+
     if(investment === 0 || annual_rate === 0)
         return;
-    
+
     // Hide form element
     calculate_form.classList.add('form--out');
     setTimeout(function(){
@@ -188,36 +207,55 @@ function onCalculate(event){
 
     dates_result = calculatePayDay(years, time_limit);
 
-    dates_result = dates_result.map(function(element){
-        return {date: element.date, pay: time_return};
+    // Reesctructuring information to make it more readeable
+    dates_result = dates_result.map(function(element, index){
+        return {date: element.date, pay: index === (dates_result.length - 1) ? time_return + investment :  time_return};
     });
 
     console.table(dates_result);
 
+    // Calculating if user would like to see what would happen if he/her/they invest that money through time
     investmentPorjection(investment, 10, annual_rate);
 
-    graph_container.classList.remove('inactive');
 
-    initial_table.appendChild(createTableRowHTML(investment, `${(annual_rate * 100)} %`));
-    worth_table.appendChild(createTableRowHTML(final_return, investment + final_return));
+    container.classList.remove('inactive');
+    container.classList.add('container--fade-in');
+    setTimeout(function(){
+        container.classList.remove('container--fade-in');
+    }, 500);
+
+    // Showing values given by user
+    document.querySelector('table#initial-table>tbody>tr:last-of-type>td:first-of-type').innerText = investment;
+    document.querySelector('table#initial-table>tbody>tr:last-of-type>td:last-of-type').innerText = `${annual_rate * 100} %`;
+    document.querySelector('table#worth-table>tbody>tr:last-of-type>td:first-of-type').innerText = final_return;
+    document.querySelector('table#worth-table>tbody>tr:last-of-type>td:last-of-type').innerText = investment + final_return;
+
+    console.log(return_table.previousElementSibling);
+    return_table.previousElementSibling.innerText = `Usted ha elegido el pago de intereses ${time_limit} por lo que se dividirán en diferentes exhibiciones:`;
     
+    // getting an array of elements limited so it can be displayed a few elements
     const page = pageableTable( dates_result, 0, 6);
 
+    // getting the total pages from a collection of elements, each page will of 6 elements
     let page_count = getPages(dates_result, 6) ;
-
+    
     page_count = page_count === 0 ? 1 : page_count;
     
     let limit_page_count = (page_count > 4) ? 4 : page_count;
 
+    // Setting in which pages is the current data
     return_table.setAttribute('data-page', 1);
 
+    // Show the aside arrows to move through pages
    showForBackOnActivePage(1, page_count);
 
+    //adding rows to a table    
     for(let i = 0; i < limit_page_count; i++){
         let btn = createButtonHTML(i + 1, 'pageable-table__button');
         btn.addEventListener('click', onChangeSpecificPage);
         page_number_buttons.appendChild( btn );
     }
+
     
     page_number_buttons.querySelector('button:nth-child(1)').classList.add('pageable-table__button--active');
 
@@ -247,6 +285,8 @@ function onChangePage(event){
 
     if(total_pages === (position - 1) || ( position === 0 && !direction) || !total_pages)
         return;
+
+    console.log('Holi hijo de tu puta madre');
     
     return_table.setAttribute('data-page', position);
 
@@ -310,21 +350,21 @@ function onChangeSpecificPage(event){
             }
         }
     }
-    else if(event.target.nextSibling === null){
-        
+    else if(event.target.nextSibling === null && total_pages > 4){
         if(position === total_pages - 1){
-        
+
             buttons.forEach(function(button, index){
                 button.innerText = position + (index - 2);
             });
         }
-        else if(position === total_pages && total_pages != buttons.length){
-        
+        else if(position === total_pages && total_pages != buttons.length ){
+            console.log('Hola hijo de tu puta madre');
             buttons.forEach(function(button, index){
                 button.innerText = position + (index - 3);
             });
         }
         else {
+            console.log('hola');
          //It means that we have to move elements to left
             buttons.forEach(function (button, index) {
                 button.innerText = (position - 1) + index;
@@ -393,7 +433,6 @@ function resetFoBaButtons(buttons){
             button.classList.remove('inactive');
     });
 }
-
 
 // HTML clear table
 function clearTable(table_element){
@@ -488,6 +527,36 @@ function drawArray(array, width, height, x_start, y_start, speed, delay){
         delay += 150;
     }
 }
+
+// Input validations
+function inputsValidate(investment, annual_rate){
+    if(!investment){
+        if(investment_input.classList.contains('form__input--error'))
+            investment_input.classList.remove('form__input--error');
+
+        setTimeout(function(){
+            investment_input.classList.add('form__input--error');
+        }, 100);
+    }
+    else{
+        if(investment_input.classList.contains('form__input--error'))
+            investment_input.classList.remove('form__input--error');
+    }
+
+    if(!annual_rate){
+        if(annual_rate_input.classList.contains('form__input--error'))
+            annual_rate_input.classList.remove('form__input--error');
+
+        setTimeout(function(){
+            annual_rate_input.classList.add('form__input--error');
+        }, 100);
+    }
+    else{
+        if(annual_rate_input.classList.contains('form__input--error'))
+            annual_rate_input.classList.remove('form__input--error');
+    }
+}
+
 
 // Pageable
 function showPage(table_rows){
