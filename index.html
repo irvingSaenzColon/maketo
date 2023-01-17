@@ -22,8 +22,8 @@
                     <span></span>
                 </button>
                 <div class="nav__right">
-                    <a class="nav__link" href="index.html">Inicio</a>
-                    <a class="nav__link" href="about.html">Acerca de</a>
+                    <button class="nav__option nav__option--active">Inicio</button>
+                    <button class="nav__option">Acerca de</button>
                 </div>
             </nav>
         </header>
@@ -38,7 +38,7 @@
             </div>
         </aside>
         <main>
-            <form class="form" autocomplete="off">
+            <form class="form form--fixed" autocomplete="off">
                 <label for="investment">Inversión</label>
                 <input id="investment" type="number" name="investment" placeholder="Ingrese el monto que desea invertir">
                 <label for="yield">Rendimiento</label>
@@ -120,9 +120,21 @@
                         </div>
 
                     </div>
-                    <div class="about-page">
+                    <div id="about-page" class="inactive">
                         <h2 class="section__title">Acerca de</h2>
-                        <p>Este proyecto hace un calculo básico de una inversión dada una tasa de interes anual</p>
+                        <p>Esta página esta hecha para fines de calculo básico de una inversión dada una tasa de interes anual y una inversión inicial. No tiene en cuenta la inflación ni algún otro factor que pueda alterar la misma por lo que, son valores en bruto.</p>
+                        <p>Si desea hacer alguna sugerencia o comentario, no dude en llenar el siguiente formulario y lo consultaré lo más pronto posible</p>
+                        <form id="contact-form" class="form" action="test.php" method="post">
+                            <label for="user-name">Nombre completo</label>
+                            <input id="user-name" type="text" placeholder="ingrese su nombre completo">
+                            <label for="user-email">Correo Electrónico</label>
+                            <input id="user-email" type="email" placeholder="ingrese su correo electrónico">
+                            <label for="user-subject">Asunto</label>
+                            <input id="user-subject" type="text" placeholder="ingrese un asunto a su mensaje">
+                            <label for="user-message">Cuerpo del mensaje</label>
+                            <textarea id="user-message" placeholder="Describa su sugerencia o comentario, se recibirá con mucho aprecio" cols="20"></textarea>
+                            <button type="submit">Enviar</button>
+                        </form>
                     </div>
                     <canvas id="graph" class="graph__canvas inactive">
                     </canvas>

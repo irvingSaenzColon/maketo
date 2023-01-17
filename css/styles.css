@@ -122,17 +122,27 @@ p{
     gap: 10px;
     font-size: 1.5rem;
 }
-.nav__right>a{
+.nav__right>button{
+    cursor: pointer;
     display: block;
     padding: 8px 16px;
+    font-size: 1.5rem;
     text-decoration: none;
+    background-color: var(--rich-black-fogra-29);
 }
-.nav__link{
+.nav__option{
     color: var(--pale-cerulean);
+    border: 1px solid var(--rich-black-fogra-29);
 }
 
-.nav__link:hover{
+.nav__option:hover{
     background-color: var(--rich-black-fogra-28);
+}
+
+.nav__option--active{
+    border-bottom: 1px solid var(--radical-red);
+    font-weight: 700;
+    color: var(--radical-red);
 }
 
 /* aside menu */
@@ -190,12 +200,15 @@ p{
 
 /* form */
 .form{
-    position: fixed;
     padding: 24px 16px;
     width: 100%;
     margin: 0 auto 24px;
     border-radius: var(--border-sm);
     background-color: var(--oxford-blue);
+}
+
+.form--fixed{
+    position: fixed;
 }
 
 .form--in{
@@ -222,6 +235,7 @@ p{
 }
 
 .form>input,
+.form>textarea,
 .form>select{
     display: block;
     padding: 8px 16px;
@@ -235,17 +249,27 @@ p{
     background-color: var(--rich-black-fogra-29);
 }
 
-.form>input::placeholder{
+.form>textarea{
+    resize: none;
+    height: 150px;
+}
+
+.form>input::placeholder,
+.form>textarea::placeholder
+{
+    font-family: 'Montserrat', sans-serif;
     color: var(--glaucous);
 }
 
 .form>input:hover,
+.form>textarea:hover,
 .form>select:hover{
     border: 1px solid var(--true-blue);
     color: var(--glaucous);
 }
 
 .form>input:focus,
+.form>textarea:focus,
 .form>select:focus{
     outline: none;
     color: var(--true-blue);
@@ -282,6 +306,19 @@ p{
 }
 
 /* graph  styles */
+.page--off{
+    animation-name: page-off;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+.page--in{
+    animation-name: page-in;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+}
+
 .container{
     display: flex;
     min-height: 100vh;
@@ -565,5 +602,32 @@ p{
     }
     .flex{
         display: none;
+    }
+}
+@keyframes page-off {
+    0%{
+        transform: scale(1) translateX(0);
+    }
+    50%{
+        transform: scale(1.05) translateX(0);
+        opacity: 1;
+    }
+    100%{
+        transform: scale(1.05) translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes page-in {
+    0%{
+        transform: scale(1) translateX(0);
+    }
+    50%{
+        transform: scale(1.05) translateX(0);
+        opacity: 1;
+    }
+    100%{
+        transform: scale(1.05) translateX(-100%);
+        opacity: 0;
     }
 }

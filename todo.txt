@@ -23,10 +23,19 @@
 11.- borrar los rows                                                --Hecho
 12.- Cambiar texto de Pagos                                         --Hecho
 
+// 16/01/2023
+1.- Hacer página de "acerca de"                                     --Hecho
+2.- Hacer formulario con envío de correo                            --Hecho
+3.- Envio de correos con php                                        --Hecho
+4.- Mostrar página de about                                         --En progreso
+
 //Cosas por hacer
-- Hacer página de "acerca de"                                   --En progreso
-- graficar elementos                                            --Falta
-- simplificar el código (if anidado)                            --Falta
+
+- crear un archivo de entorno para seguridad                        --En progreso
+
+- graficar elementos inversiones                                    --Faltas
+- graficar ganancias anuales de esas inversiones                    --Falta
+- simplificar el código (if anidado)                                --Falta
 
 //Bugs
 al hacer click en el element final hay un error, se re calculan los número fuera de los limites --Hecho

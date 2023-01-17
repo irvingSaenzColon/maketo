@@ -1,6 +1,9 @@
 // Element from document
 const body = document.querySelector('body');
 
+    // navbar
+const nav_options = document.querySelectorAll('button.nav__option');
+
     // Submenu
 const aside_menu = document.querySelector('aside.flex');
 
@@ -11,12 +14,18 @@ const context = canvas.getContext('2d');
 const coordinates = document.getElementById('coordinates');
 const container = document.querySelector('section.container');
 
+    // Page
+const home = document.querySelector('div.tables-container');
+const about = document.getElementById('about-page');
+
     // Form elements
 const calculate_form = document.querySelector('form.form');
 const investment_input = document.getElementById('investment');
 const annual_rate_input = document.getElementById('yield');
 const inv_time_select = document.getElementById('investment_time');
 const time_limit_select = document.getElementById('time_limit');
+
+const contact_form = document.getElementById('contact-form'); 
 
 
 const initial_table = document.getElementById('initial-table');
@@ -60,6 +69,7 @@ canvas.addEventListener('mouseenter', onCanvasEnter);
 canvas.addEventListener('mouseleave', onCanvasLeave);
 
 calculate_form.addEventListener('submit', onCalculate);
+contact_form.addEventListener('submit', onSendMail);
 
 burger_buton.addEventListener('click', onClickBurger);
 new_calculus.addEventListener('click', onNewCalculus);
@@ -79,6 +89,10 @@ function onWindowLoad(event){
 
     change_page_buttons.forEach(function(button){
         button.addEventListener('click', onChangePage);
+    })
+
+    nav_options.forEach(function(button){
+        button.addEventListener('click', onNavOption);
     })
 
     // if(container.classList.contains('inactive'))
@@ -111,74 +125,7 @@ function onCanvasEnter(event){
     canvas.classList.remove('canvas-graph--cursor-crosshair');
  }
 
-//  Click functions
-function onNewCalculus(event){
-    aside_menu.classList.add('submenu--out');
-
-    //if it is already open just close mobile menu
-    if(!calculate_form.classList.contains('inactive')){
-        setTimeout(function(){
-            aside_menu.classList.remove('submenu--out');
-            aside_menu.classList.add('inactive') ;
-            body.classList.remove('no-overflow');
-        }, 500);
-        return;
-    }
-
-    // closing aside menu
-    
-    container.classList.add('container--fade-out');
-    
-    setTimeout(function(){
-        aside_menu.classList.remove('submenu--out');
-        aside_menu.classList.add('inactive') ;
-        body.classList.remove('no-overflow');
-        container.classList.add('inactive');
-        container.classList.remove('container--fade-out');
-
-        calculate_form.classList.add('form--in');
-
-        if( calculate_form.classList.contains('form--out') )
-            calculate_form.classList.remove('form--out');
-
-        calculate_form.classList.remove('inactive');
-
-    }, 500);
-
-    // Clearing the table
-    clearTable(return_table);
-    // Clearing pages
-    clearPeagable(page_number_buttons.querySelectorAll('button'));
-    //Setting next and preovios button to a default state
-    resetFoBaButtons([next_page, previous_page]);
-
-
-
-}
-
-function onClickBurger(event){
-
-    if(aside_menu.classList.contains('inactive')){
-        aside_menu.classList.remove('inactive');
-        body.classList.add('no-overflow');
-        aside_menu.classList.add('submenu--in');
-
-        setTimeout(function(){
-            aside_menu.classList.remove('submenu--in');
-        }, 500);
-    }
-    else{
-        aside_menu.classList.add('submenu--out');
-
-        setTimeout(function(){
-            aside_menu.classList.remove('submenu--out');
-            aside_menu.classList.add('inactive') ;
-            body.classList.remove('no-overflow');
-        }, 500);
-    }
-        
-        
-}
+//  Submit functions
 
 function onCalculate(event){
     event.preventDefault();
@@ -270,6 +217,115 @@ function onCalculate(event){
 
     showPage(table_rows);
 
+}
+
+function onSendMail(event){
+    console.log('Enviando correo');
+    event.preventDefault();
+
+    window.fetch('http://localhost:8080/testreader.php',{
+        method:'POST',
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log(data);
+    });
+}
+
+//  Click functions
+function onNewCalculus(event){
+    aside_menu.classList.add('submenu--out');
+
+    //if it is already open just close mobile menu
+    if(!calculate_form.classList.contains('inactive')){
+        setTimeout(function(){
+            aside_menu.classList.remove('submenu--out');
+            aside_menu.classList.add('inactive') ;
+            body.classList.remove('no-overflow');
+        }, 500);
+        return;
+    }
+
+    // closing aside menu
+    
+    container.classList.add('container--fade-out');
+    
+    setTimeout(function(){
+        aside_menu.classList.remove('submenu--out');
+        aside_menu.classList.add('inactive') ;
+        body.classList.remove('no-overflow');
+        container.classList.add('inactive');
+        container.classList.remove('container--fade-out');
+
+        calculate_form.classList.add('form--in');
+
+        if( calculate_form.classList.contains('form--out') )
+            calculate_form.classList.remove('form--out');
+
+        calculate_form.classList.remove('inactive');
+
+    }, 500);
+
+    // Clearing the table
+    clearTable(return_table);
+    // Clearing pages
+    clearPeagable(page_number_buttons.querySelectorAll('button'));
+    //Setting next and preovios button to a default state
+    resetFoBaButtons([next_page, previous_page]);
+
+
+
+}
+
+function onNavOption(event){
+    console.log(event.target);
+
+    nav_options.forEach(function(option){
+        option === event.target ? option.classList.add('nav__option--active') : option.classList.remove('nav__option--active') ;
+    });
+
+    // Show page and hide previous one
+    console.log(event.target.innerText);
+    if(event.target.innerText === 'Acerca de'){
+        // Esconde el Inicio
+        if(!home.classList.contains('inactive')){
+            home.classList.add('');
+            //Crear animación para pasar de página
+            setTimeout(function(){
+                
+            }, 250)
+        }
+    }
+    else if(event.target.innerText === 'Inicio'){
+        // Verificar si hay datos en el arreglos
+        //si hay datos en el arreglo entonces muestra lo que está
+        //Si no hay datos en el arreglo muestra el formulario del principio
+
+    }
+}
+
+function onClickBurger(event){
+
+    if(aside_menu.classList.contains('inactive')){
+        aside_menu.classList.remove('inactive');
+        body.classList.add('no-overflow');
+        aside_menu.classList.add('submenu--in');
+
+        setTimeout(function(){
+            aside_menu.classList.remove('submenu--in');
+        }, 500);
+    }
+    else{
+        aside_menu.classList.add('submenu--out');
+
+        setTimeout(function(){
+            aside_menu.classList.remove('submenu--out');
+            aside_menu.classList.add('inactive') ;
+            body.classList.remove('no-overflow');
+        }, 500);
+    }
+        
+        
 }
 
 function onChangePage(event){
