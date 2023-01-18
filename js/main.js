@@ -19,7 +19,7 @@ const home = document.querySelector('div.tables-container');
 const about = document.getElementById('about-page');
 
     // Form elements
-const calculate_form = document.querySelector('form.form');
+const calculate_form = document.getElementById('calculate-form');
 const investment_input = document.getElementById('investment');
 const annual_rate_input = document.getElementById('yield');
 const inv_time_select = document.getElementById('investment_time');
@@ -287,19 +287,52 @@ function onNavOption(event){
     // Show page and hide previous one
     console.log(event.target.innerText);
     if(event.target.innerText === 'Acerca de'){
-        // Esconde el Inicio
-        if(!home.classList.contains('inactive')){
-            home.classList.add('');
+        // Esconde el Form 
+        if( !calculate_form.classList.contains('inactive') ){
+            
+            body.classList.add('no-overflow');
+            calculate_form.classList.add('page--off');
+            setTimeout(function(){
+                body.classList.remove('no-overflow');
+                calculate_form.classList.add('inactive');
+                calculate_form.classList.remove('page--off');
+
+                //Shows about page
+                if(about.classList.contains('inactive'))
+                    about.classList.remove('inactive');
+
+                about.classList.add('container--fade-in');
+                setTimeout(function(){
+                    about.classList.remove('container--fade-in');
+                }, 500);
+            }, 500);
+        }
+        else {
+            body.classList.add('no-overflow');
+            home.classList.add('page--off');
             //Crear animación para pasar de página
             setTimeout(function(){
-                
-            }, 250)
+                home.classList.add('inactive');
+                home.classList.remove('page--off');
+                body.classList.remove('no-overflow');
+            }, 500);
         }
     }
     else if(event.target.innerText === 'Inicio'){
         // Verificar si hay datos en el arreglos
-        //si hay datos en el arreglo entonces muestra lo que está
-        //Si no hay datos en el arreglo muestra el formulario del principio
+        // si hay datos en el arreglo entonces muestra lo que está
+        // Si no hay datos en el arreglo muestra el formulario del principio
+        if( !about.classList.contains('inactive') ){
+            
+            home.classList.add('no-overflow');
+            about.classList.add('page--off');
+
+            setTimeout(function(){
+                about.classList.add('inactive');
+                about.classList.remove('page--off');
+                home.classList.remove('no-overflow');
+            }, 500);
+        }
 
     }
 }
@@ -342,8 +375,6 @@ function onChangePage(event){
     if(total_pages === (position - 1) || ( position === 0 && !direction) || !total_pages)
         return;
 
-    console.log('Holi hijo de tu puta madre');
-    
     return_table.setAttribute('data-page', position);
 
     removeActiveFromPageable(buttons);
